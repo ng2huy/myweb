@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'db_connect.php'; // dùng kết nối chung
+require_once '/var/www/includes/db_connect.php'; // dùng kết nối chung
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' 
     && isset($_POST['username']) 
