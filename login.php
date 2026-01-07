@@ -1,41 +1,73 @@
 <?php
 session_start();
-require_once '/var/www/includes/db_connect.php'; // dùng kết nối chung
+
+// Nếu đã đăng nhập thì chuyển thẳng sang trang sản phẩm
+if (isset($_SESSION['user_id'])) {
+    header("Location: product_list.php");
+    exit();
+}
+
+// Kết nối DB dùng file chung
+require_once __DIR__ . '/../includes/db_connect.php'; 
+// chỉnh lại đường dẫn cho phù hợp với cấu trúc thư mục của bạn
+
+$error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' 
-    && isset($_POST['username']) 
-    && isset($_POST['password'])) {
+    && !empty($_POST['username']) 
+    && !empty($_POST['password'])) {
 
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    $username = trim($_POST['username']);
+    $password = trim($_POST['password']);
 
     // Lấy user từ DB
-    $sql = "SELECT * FROM [User] WHERE Username = ?";
+    $sql = "SELECT Id, Username, PasswordHash FROM [User] WHERE Username = ?";
     $params = [$username];
     $stmt = sqlsrv_query($conn, $sql, $params);
 
-    if ($stmt === false) {
-        die("Query failed: " . print_r(sqlsrv_errors(), true));
-    }
-
-    if (sqlsrv_has_rows($stmt)) {
+    if ($stmt && sqlsrv_has_rows($stmt)) {
         $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
 
         // Hash mật khẩu nhập vào bằng SHA256 để so sánh
-        $hashedInput = hash('sha256', $password);
+        $hashedInput = strtolower(hash('sha256', $password));
 
         if ($hashedInput === strtolower($row['PasswordHash'])) {
-            echo "Login successful! Welcome " . htmlspecialchars($row['Username']);
+            // Đăng nhập thành công → set session
+            $_SESSION['user_id']  = $row['Id'];
+            $_SESSION['username'] = $row['Username'];
+
+            // Redirect sang trang danh sách sản phẩm
+            header("Location: product_list.php");
+            exit();
         } else {
-            echo "Invalid password.";
+            $error = "Sai mật khẩu.";
         }
     } else {
-        echo "User not found.";
+        $error = "Không tìm thấy user.";
     }
-} else {
-    echo "Vui lòng nhập username và password.";
 }
 
 sqlsrv_close($conn);
 ?>
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng nhập</title>
+</head>
+<body>
+    <h2>Vui lòng nhập username và password.</h2>
+    <?php if (!empty($error)): ?>
+        <p style="color:red;"><?= htmlspecialchars($error) ?></p>
+    <?php endif; ?>
+    <form method="POST" action="login.php">
+        <label>Username:</label>
+        <input type="text" name="username" required><br><br>
+        <label>Password:</label>
+        <input type="password" name="password" required><br><br>
+        <button type="submit">Đăng nhập</button>
+    </form>
+</body>
+</html>
 
