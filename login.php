@@ -1,18 +1,6 @@
 <?php
 session_start();
-$serverName = "192.168.255.200";
-$connectionOptions = [
-    "Database" => "MyAppDB", // đúng tên database
-    "Uid" => "sa",
-    "PWD" => "n0kk@N73",
-    "Encrypt" => true,
-    "TrustServerCertificate" => true
-];
-
-$conn = sqlsrv_connect($serverName, $connectionOptions);
-if (!$conn) {
-    die("Connection failed: " . print_r(sqlsrv_errors(), true));
-}
+require_once 'db_connect.php'; // dùng kết nối chung
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' 
     && isset($_POST['username']) 
