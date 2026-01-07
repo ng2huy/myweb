@@ -1,4 +1,5 @@
 <?php
+session_start();
 $serverName = "192.168.255.200";
 $connectionOptions = [
     "Database" => "MyAppDB", // đúng tên database
