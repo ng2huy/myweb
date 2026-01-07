@@ -5,7 +5,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-require_once 'db_connect.php'; // dùng kết nối chung
+require_once '/var/www/includes/db_connect.php'; // dùng kết nối chung
 
 $sql = "SELECT ProductID, ProductName, Price, Description FROM Product";
 $stmt = sqlsrv_query($conn, $sql);
