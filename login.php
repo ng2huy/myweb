@@ -1,8 +1,5 @@
 <?php
-session_save_path("/tmp");
 session_start();
-
-
 require_once '/var/www/includes/db_connect.php';
 
 $conn = sqlsrv_connect($serverName, $connectionOptions);
@@ -35,8 +32,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
         if ($hashedInput === strtolower($row['PasswordHash'])) {
             $_SESSION['user_id']  = $row['UserID']; // dùng đúng cột trong DB
             $_SESSION['username'] = $row['Username'];
-	// Debug: in ra session ID và biến session 
-	   
 
             // Đăng nhập thành công → chuyển sang product_list.php
             header("Location: product_list.php");
@@ -59,4 +54,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
 
 sqlsrv_close($conn);
 ?>
-
