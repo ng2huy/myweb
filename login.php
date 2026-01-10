@@ -35,8 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
             $_SESSION['user_id']  = $row['UserID']; // dùng đúng cột trong DB
             $_SESSION['username'] = $row['Username'];
 	// Debug: in ra session ID và biến session 
-	    error_log('Login session_id: ' . session_id()); 
-	    error_log(print_r($_SESSION, true))
+	   
 
             // Đăng nhập thành công → chuyển sang product_list.php
             header("Location: product_list.php");
