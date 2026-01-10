@@ -1,12 +1,14 @@
 <?php
 
+
+// Bắt đầu session để lấy thông tin đăng nhập
+session_start();
+
 echo '<pre>';
 print_r($_SESSION);
 exit();
 
 
-// Bắt đầu session để lấy thông tin đăng nhập
-session_start();
 
 // Kiểm tra xem người dùng đã đăng nhập chưa
 if (!isset($_SESSION['user_id'])) {
