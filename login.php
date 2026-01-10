@@ -1,4 +1,7 @@
 <?php
+echo '<pre>'; print_r($_POST); 
+echo $_SERVER['REQUEST_METHOD']; 
+exit();
 session_start();
 require_once '/var/www/includes/db_connect.php';
 
