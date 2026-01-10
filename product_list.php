@@ -1,17 +1,6 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
 session_start();
-
-echo '<pre>';
-echo 'Session ID tại login: ' . session_id(); 
-print_r($_SESSION); 
-exit();
-
-
-print_r($_SESSION);
 
 if (!isset($_SESSION['user_id'])) {
     die("Session không tồn tại. Bạn chưa đăng nhập.");
