@@ -1,7 +1,4 @@
 <?php
-echo '<pre>';
-print_r($_POST);
-exit();
 session_start();
 require_once '/var/www/includes/db_connect.php';
 
@@ -10,12 +7,14 @@ if (!$conn) {
     die("Connection failed: " . print_r(sqlsrv_errors(), true));
 }
 
+// Chỉ xử lý khi form gửi bằng POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username'] ?? '');
     $password = trim($_POST['password'] ?? '');
 
+    // Kiểm tra input rỗng
     if ($username === '' || $password === '') {
-        header("Location: index.html?error=empty");
+        header("Location: index.php?error=empty");
         exit();
     }
 
@@ -31,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (sqlsrv_has_rows($stmt)) {
         $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
 
-        // Hash mật khẩu nhập vào bằng SHA256
+        // Hash mật khẩu nhập vào bằng SHA256 (chuẩn hóa chữ hoa)
         $hashedInput = strtoupper(hash('sha256', $password));
         $storedHash  = strtoupper($row['PasswordHash']);
 
@@ -42,15 +41,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: product_list.php");
             exit();
         } else {
-            header("Location: index.html?error=wrongpass");
+            header("Location: index.php?error=wrongpass");
             exit();
         }
     } else {
-        header("Location: index.html?error=nouser");
+        header("Location: index.php?error=nouser");
         exit();
     }
 } else {
-    header("Location: index.html?error=empty");
+    // Nếu không phải POST thì quay về trang login
+    header("Location: index.php?error=empty");
     exit();
 }
 
