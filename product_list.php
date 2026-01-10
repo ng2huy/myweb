@@ -1,4 +1,10 @@
 <?php
+
+echo '<pre>';
+print_r($_SESSION);
+exit();
+
+
 // Bắt đầu session để lấy thông tin đăng nhập
 session_start();
 
