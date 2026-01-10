@@ -1,9 +1,10 @@
 <?php
 session_start();
 
-// Kiểm tra đăng nhập
+// Nếu chưa đăng nhập thì chuyển hướng về trang index.html
 if (!isset($_SESSION['user_id'])) {
-    die("❌ Session không tồn tại. Bạn chưa đăng nhập.");
+    header("Location: /index.html");
+    exit();
 }
 
 // Kết nối CSDL
