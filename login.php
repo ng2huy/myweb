@@ -1,8 +1,5 @@
 <?php
 session_start();
-echo 'Session ID tại login: ' . session_id(); 
-print_r($_SESSION); 
-exit();
 
 
 require_once '/var/www/includes/db_connect.php';
@@ -37,6 +34,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
         if ($hashedInput === strtolower($row['PasswordHash'])) {
             $_SESSION['user_id']  = $row['UserID']; // dùng đúng cột trong DB
             $_SESSION['username'] = $row['Username'];
+	// Debug: in ra session ID và biến session 
+	    error_log('Login session_id: ' . session_id()); 
+	    error_log(print_r($_SESSION, true))
 
             // Đăng nhập thành công → chuyển sang product_list.php
             header("Location: product_list.php");
