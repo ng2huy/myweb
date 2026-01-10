@@ -6,6 +6,11 @@ error_reporting(E_ALL);
 session_start();
 
 echo '<pre>';
+echo 'Session ID tại login: ' . session_id(); 
+print_r($_SESSION); 
+exit();
+
+
 print_r($_SESSION);
 
 if (!isset($_SESSION['user_id'])) {

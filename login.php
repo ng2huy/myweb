@@ -1,5 +1,10 @@
 <?php
 session_start();
+echo 'Session ID tại login: ' . session_id(); 
+print_r($_SESSION); 
+exit();
+
+
 require_once '/var/www/includes/db_connect.php';
 
 $conn = sqlsrv_connect($serverName, $connectionOptions);
