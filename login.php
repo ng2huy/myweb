@@ -30,12 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
         $hashedInput = hash('sha256', $password);
 
         if ($hashedInput === strtolower($row['PasswordHash'])) {
-            // ✅ Set session đúng tên biến
-            $_SESSION['user_id']  = $row['UserID'];
+            $_SESSION['user_id']  = $row['UserID']; // dùng đúng cột trong DB
             $_SESSION['username'] = $row['Username'];
-
-            // ✅ Ghi session xuống file trước khi redirect
-            session_write_close();
 
             // Đăng nhập thành công → chuyển sang product_list.php
             header("Location: product_list.php");
