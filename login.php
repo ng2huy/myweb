@@ -7,14 +7,12 @@ if (!$conn) {
     die("Connection failed: " . print_r(sqlsrv_errors(), true));
 }
 
-// Chỉ xử lý khi form gửi bằng POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username'] ?? '');
     $password = trim($_POST['password'] ?? '');
 
-    // Kiểm tra input rỗng
     if ($username === '' || $password === '') {
-        header("Location: index.php?error=empty");
+        header("Location: index.html?error=empty");
         exit();
     }
 
@@ -30,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (sqlsrv_has_rows($stmt)) {
         $row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
 
-        // Hash mật khẩu nhập vào bằng SHA256 (chuẩn hóa chữ hoa)
+        // Hash mật khẩu nhập vào bằng SHA256
         $hashedInput = strtoupper(hash('sha256', $password));
         $storedHash  = strtoupper($row['PasswordHash']);
 
@@ -41,16 +39,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: product_list.php");
             exit();
         } else {
-            header("Location: index.php?error=wrongpass");
+            header("Location: index.html?error=wrongpass");
             exit();
         }
     } else {
-        header("Location: index.php?error=nouser");
+        header("Location: index.html?error=nouser");
         exit();
     }
 } else {
-    // Nếu không phải POST thì quay về trang login
-    header("Location: index.php?error=empty");
+    header("Location: index.html?error=empty");
     exit();
 }
 
