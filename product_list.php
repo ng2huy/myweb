@@ -1,5 +1,17 @@
 <?php
 session_start();
+// Bật hiển thị lỗi (chỉ dùng khi debug, không nên để ở môi trường production) 
+ini_set('display_errors', 1); 
+ini_set('display_startup_errors', 1); 
+error_reporting(E_ALL); 
+// Ghi log lỗi vào file riêng 
+ini_set('log_errors', 1); 
+ini_set('error_log', '/var/www/logs/php_errors.log');
+
+
+
+
+
 
 // Nếu chưa đăng nhập thì chuyển hướng về trang index.html
 if (!isset($_SESSION['user_id'])) {
