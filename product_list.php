@@ -7,6 +7,8 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+// Cho phép cache phía reverse 
+proxy header("Cache-Control: public, max-age=600");
 // Kết nối CSDL
 require_once '/var/www/includes/db_connect.php';
 
