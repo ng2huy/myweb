@@ -4,6 +4,8 @@ session_start();
 error_reporting(E_ALL); 
 ini_set('display_errors', 1);
 
+ini_set('log_errors', 1);
+ini_set('error_log', '/var/www/logs/php_errors.log');
 
 require_once '/var/www/includes/db_connect.php';
 
@@ -37,6 +39,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
         if ($hashedInput === strtolower($row['PasswordHash'])) {
             $_SESSION['user_id']  = $row['UserID']; // dùng đúng cột trong DB
             $_SESSION['username'] = $row['Username'];
+
+	    // Log đăng nhập thành công 
+	    error_log("✅ Đăng nhập thành công UserID={$row['UserID']} Username={$row['Username']} IP=" . $_SERVER['REMOTE_ADDR']);
 
             // Đăng nhập thành công → chuyển sang product_list.php
             header("Location: product_list.php");
