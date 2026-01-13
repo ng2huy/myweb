@@ -1,45 +1,39 @@
 <?php
 session_start();
 
-// ⚠️ Bật hiển thị lỗi (chỉ dùng khi debug, không nên để ở môi trường production)
+// Bật hiển thị lỗi khi debug
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// 📁 Ghi log lỗi vào file riêng
+// Ghi log lỗi vào file riêng
 ini_set('log_errors', 1);
 ini_set('error_log', '/var/www/logs/php_errors.log');
 
-// 🔍 Kiểm tra extension SQL Server
-if (!extension_loaded('pdo_sqlsrv')) {
-    error_log("❌ Extension pdo_sqlsrv chưa được load.");
+// Kiểm tra extension SQL Server (sqlsrv)
+if (!extension_loaded('sqlsrv')) {
+    error_log("❌ Extension sqlsrv chưa được load.");
     http_response_code(500);
-    exit("Extension pdo_sqlsrv chưa được cài hoặc kích hoạt.");
+    exit("Extension sqlsrv chưa được cài hoặc kích hoạt.");
 }
 
-// 🔒 Kiểm tra đăng nhập
+// Kiểm tra đăng nhập
 if (!isset($_SESSION['user_id'])) {
-    // ❌ Không có session → user truy cập trực tiếp
     error_log("❌ Truy cập trực tiếp vào product_list.php mà không có cookie/session. IP=" . $_SERVER['REMOTE_ADDR']);
     header("Location: /index.html");
     exit();
 } else {
-    // ✅ Có session → log rõ user đang truy vấn
-    $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'unknown';
-    $ip = $_SERVER['REMOTE_ADDR'];
-    error_log("✅ User ID=" . $_SESSION['user_id'] . " Username=" . $username . " IP=" . $ip . " truy cập bằng cookie/session hợp lệ.");
+    $username = isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'unknown';
+    $userId   = isset($_SESSION['user_id']) ? intval($_SESSION['user_id']) : 0;
+    $ip       = $_SERVER['REMOTE_ADDR'];
+    error_log("✅ User ID=$userId Username=$username IP=$ip truy cập bằng cookie/session hợp lệ.");
 }
 
-// 📦 Cho phép cache phía reverse proxy
+// Cho phép cache phía reverse proxy
 header("Cache-Control: public, max-age=600");
 
-// 🔌 Kết nối CSDL
+// Kết nối CSDL
 require_once '/var/www/includes/db_connect.php';
-
-// Ghi log thông tin kết nối để kiểm tra
-error_log("🔧 serverName: " . print_r($serverName, true));
-error_log("🔧 connectionOptions: " . print_r($connectionOptions, true));
-
 $conn = sqlsrv_connect($serverName, $connectionOptions);
 if (!$conn) {
     error_log("❌ Lỗi kết nối SQL Server: " . print_r(sqlsrv_errors(), true));
@@ -47,10 +41,8 @@ if (!$conn) {
     exit("Không kết nối được CSDL.");
 }
 
-// 📄 Truy vấn sản phẩm
+// Truy vấn sản phẩm
 $sql = "SELECT ProductID, ProductName, Price, Description FROM Product";
-error_log("🔍 SQL truy vấn sản phẩm bởi UserID=" . $_SESSION['user_id'] . " Username=" . $username . " IP=" . $ip);
-
 $stmt = sqlsrv_query($conn, $sql);
 if ($stmt === false) {
     error_log("❌ Lỗi truy vấn SQL: " . print_r(sqlsrv_errors(), true));
@@ -65,13 +57,30 @@ if ($stmt === false) {
     <title>Danh sách sản phẩm</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 40px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .user-info {
+            position: fixed;
+            top: 10px;
+            right: 20px;
+            background: #f2f2f2;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #333;
+            z-index: 9999;
+        }
+        table { width: 100%; border-collapse: collapse; margin-top: 60px; }
         th, td { border: 1px solid #ccc; padding: 12px; text-align: left; }
         th { background-color: #f2f2f2; }
         caption { font-size: 24px; font-weight: bold; margin-bottom: 10px; }
     </style>
 </head>
 <body>
+    <!-- Góc hiển thị thông tin user -->
+    <div class="user-info">
+        👤 User: <?php echo $username; ?> (ID: <?php echo $userId; ?>)
+        | <a href="logout.php">Đăng xuất</a>
+    </div>
+
     <table>
         <caption>🛒 Danh sách sản phẩm</caption>
         <thead>

@@ -1,5 +1,10 @@
 <?php
 session_start();
+// Bật hiển thị lỗi 
+error_reporting(E_ALL); 
+ini_set('display_errors', 1);
+
+
 require_once '/var/www/includes/db_connect.php';
 
 $conn = sqlsrv_connect($serverName, $connectionOptions);
