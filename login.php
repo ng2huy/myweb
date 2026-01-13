@@ -37,7 +37,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
         $hashedInput = hash('sha256', $password);
 
         if ($hashedInput === strtolower($row['PasswordHash'])) {
-            $_SESSION['user_id']  = $row['UserID']; // dùng đúng cột trong DB
+
+	// Reset session ID để tránh reuse session cũ 
+	    session_regenerate_id(true); 
+
+           $_SESSION['user_id']  = $row['UserID']; // dùng đúng cột trong DB
             $_SESSION['username'] = $row['Username'];
 
 
