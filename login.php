@@ -40,7 +40,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
             $_SESSION['user_id']  = $row['UserID']; // dùng đúng cột trong DB
             $_SESSION['username'] = $row['Username'];
 
+
 	    // Log đăng nhập thành công 
+            error_log("")
 	    error_log("✅ Đăng nhập thành công UserID={$row['UserID']} Username={$row['Username']} IP=" . $_SERVER['REMOTE_ADDR']);
 
             // Đăng nhập thành công → chuyển sang product_list.php
