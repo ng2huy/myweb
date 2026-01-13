@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
 
 	    // Log đăng nhập thành công 
            // error_log("\n")
-	    error_log("\n ✅ Đăng nhập thành công UserID={$row['UserID']} Username={$row['Username']} IP=" . $_SERVER['REMOTE_ADDR']);
+	    error_log("✅ Đăng nhập thành công UserID={$row['UserID']} Username={$row['Username']} IP=" . $_SERVER['REMOTE_ADDR']);
 
             // Đăng nhập thành công → chuyển sang product_list.php
             header("Location: product_list.php");

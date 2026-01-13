@@ -26,7 +26,7 @@ if (!isset($_SESSION['user_id'])) {
     $username = isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'unknown';
     $userId   = isset($_SESSION['user_id']) ? intval($_SESSION['user_id']) : 0;
     $ip       = $_SERVER['REMOTE_ADDR'];
-    error_log("✅ User ID=$userId Username=$username IP=$ip truy cp product bằng cookie/session hợp lệ.");
+    error_log("✅ User ID=$userId Username=$username IP=$ip truy cp product bằng cookie/session hợp lệ \n.");
 }
 
 // Cho phép cache phía reverse proxy
